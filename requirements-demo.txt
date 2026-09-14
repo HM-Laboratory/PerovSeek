@@ -1,0 +1,13 @@
+# Python 3.12 recommended. Install in an isolated environment.
+# Models and scientific computations use the original PerovSeek source files.
+torch==2.14.0
+numpy==2.5.3
+pandas>=2.2,<3.1
+openpyxl>=3.1,<4
+scipy==1.18.1
+scikit-learn==1.9.1
+matplotlib==3.11.2
+botorch==0.18.1
+gpytorch==1.15.2
+notebook>=7,<8
+ipykernel>=6,<8
