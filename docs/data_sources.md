@@ -20,17 +20,25 @@ DMF、NFM 和 EA 为体积分数，整理时将各行的三种溶剂分别除以
 
 ## Spectra and checkpoint / 光谱与检查点
 
-`data/spectra/1.59eV_additive_data.xlsx` contains 2,268 examples. The model joins 300 absorption points and two 66-point PL traces. Signal divisors are 4, 120,000 and 150,000 for absorption, top-excited PL and bottom-excited PL respectively. A second channel contains wavelength minus 400 nm; training divides the label `PCE#rs1` by 25, and inference multiplies predictions by 25.
+`data/spectra/1.59eV_additive_data.xlsx` contains 2,268 spectral records. The model joins 300 absorption points and two 66-point PL traces. Signal divisors are 4, 120,000 and 150,000 for absorption, top-excited PL and bottom-excited PL respectively. A second channel contains wavelength minus 400 nm; training divides the label `PCE#rs1` by 25, and inference multiplies predictions by 25.
 
-`data/spectra/1.59eV_additive_data.xlsx` 包含 2,268 个样本。模型拼接 300 个吸收数据点与两组各 66 点的 PL 光谱。吸收、上激发 PL、下激发 PL 分别除以 4、120,000、150,000；第二通道为波长减去 400 nm。训练时将标签 `PCE#rs1` 除以 25，推理时将预测值乘以 25。
+`data/spectra/1.59eV_additive_data.xlsx` 包含 2,268 条光谱记录。模型拼接 300 个吸收数据点与两组各 66 点的 PL 光谱。吸收、上激发 PL、下激发 PL 分别除以 4、120,000、150,000；第二通道为波长减去 400 nm。训练时将标签 `PCE#rs1` 除以 25，推理时将预测值乘以 25。
+
+The demonstration calls `load_spectra(..., label=None)` and predicts all records, then ranks them by predicted PCE. In its final stage, it reads the original device PCE from `Param.PCE#rs1` (Excel column R) for the eight selected records. `Param`'s `Unnamed: 0` column supplies the displayed sample identifiers; identifiers repeat six or seven times in this workbook. The prediction's `source_row` is the zero-based position in `Param`, so matching uses the row position and verifies the sample identifier. It is not an Excel row number or a unique sample identifier.
+
+演示通过 `load_spectra(..., label=None)` 读取数据，对全部记录预测并按预测 PCE 排序。最后阶段从 `Param.PCE#rs1`（Excel R 列）读取所选八条记录的原始器件 PCE。展示的样本编号来自 `Param` 的 `Unnamed: 0` 列，同一编号在该工作簿中出现六或七次。预测结果中的 `source_row` 是 `Param` 中从零开始的行位置，匹配时据此定位并核对样本编号；它不是 Excel 行号，也不是唯一的样本编号。
+
+The spectral records and their device PCE are independent of the 126-record formulation dataset. The demonstration does not establish a pairing between these records and the newly recommended `D01`–`D06` formulations, and does not add them to `data/formulations.xlsx`.
+
+光谱记录及对应器件 PCE 与 126 条配方数据相互独立。演示没有建立这些记录与新推荐的 `D01`–`D06` 配方之间的对应关系，也不将它们加入 `data/formulations.xlsx`。
 
 The supplied PCE checkpoint was fine-tuned for 100 epochs with seed 42, using 500 training, 268 validation and 1,500 test examples. Training updates the PCE head and the final ten encoder blocks; validation loss selects the saved weights. The checkpoint stores architecture, preprocessing, source hashes and split indices alongside the model weights.
 
 附带的 PCE 检查点以随机种子 42 微调 100 个 epoch，使用 500 个训练、268 个验证和 1,500 个测试样本。训练更新 PCE 预测头及最后十个编码器块，根据验证损失选择权重。检查点同时保存模型结构、预处理、来源文件哈希及数据划分索引。
 
-Evaluation describes this supervised example split. The public files do not establish its overlap with encoder pre-training. Model outputs can fall outside the physical PCE range, so exported values and plots retain the complete predictions.
+Optional test evaluation describes this supervised example split. The all-record demonstration also includes training and validation examples, so its ranking is not a held-out performance evaluation. The public files do not establish overlap with encoder pre-training. Model outputs can fall outside the physical PCE range; exports retain the complete predictions.
 
-评价结果对应本示例的监督学习划分；公开文件未明确其与编码器预训练数据的重叠情况。模型输出可能超出 PCE 的物理范围，导出数据与图表保留完整预测值。
+可选测试集评价对应本示例的监督学习划分。演示的全量预测还包含训练集和验证集记录，因此排序结果不代表独立测试性能。公开文件未明确其与编码器预训练数据的重叠情况。模型输出可能超出 PCE 的物理范围，导出数据保留完整预测值。
 
 The upstream workbook with updated headers is preserved as `data/source/Bayesian optimization data (updated headers).xlsx` (commit `9cbe58a`). Its values across all 15 sheets match the original workbook; the `4-FBSA` header matches the prepared demo table.
 

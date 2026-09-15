@@ -1,8 +1,8 @@
 # PerovSeek
 
-PerovSeek combines Bayesian formulation optimization with spectral prediction of perovskite solar-cell PCE. The demo calls two Python modules, `perovseek.bayesian` and `perovseek.spectra`, with editable inputs and optimization parameters.
+PerovSeek combines Bayesian formulation optimization with spectral prediction of perovskite solar-cell PCE. Its single demonstration notebook, `notebooks/PerovSeek_demo.ipynb`, calls the `perovseek.bayesian` and `perovseek.spectra` libraries in eight code cells.
 
-PerovSeek 将贝叶斯配方优化与钙钛矿太阳能电池 PCE 光谱预测结合。演示通过 `perovseek.bayesian` 和 `perovseek.spectra` 两个 Python 模块运行，输入数据和优化参数均可修改。
+PerovSeek 将贝叶斯配方优化与钙钛矿太阳能电池 PCE 光谱预测结合。唯一演示入口为 `notebooks/PerovSeek_demo.ipynb`，通过八个代码单元调用 `perovseek.bayesian` 和 `perovseek.spectra` 库。
 
 ## Install and run / 安装与运行
 
@@ -24,14 +24,18 @@ Windows 使用 `.venv\Scripts\Activate.ps1` 激活环境。按顺序运行 noteb
 
 ## Four stages / 四个阶段
 
-1. **Bayesian optimization / 贝叶斯优化** — Read measured formulations and bounds from Excel, set PCE as the target, and generate candidate formulations.
-   从 Excel 读取实测配方与边界，设置 PCE 目标和优化参数，生成候选配方。
-2. **High-throughput experimentation and characterization / 高通量实验与表征** — Prepare the recommended films and collect absorption and PL spectra with sample identifiers.
-   制备候选薄膜，采集吸收和 PL 光谱，并记录样本编号。
-3. **Pretrained model prediction / 预训练模型预测** — Load the PCE checkpoint, predict PCE from the spectra, and rank samples for device testing.
-   加载 PCE 检查点，通过光谱预测 PCE，对样本排序并筛选待测器件。
-4. **Device validation and feedback / 器件验证与反馈** — Measure device PCE and add complete measured records to the formulation data for the next round.
-   实测器件 PCE，将完整的实测记录加入配方数据，进入下一轮优化。
+1. **Bayesian optimization / 贝叶斯优化** — Read 126 measured formulations and editable bounds from Excel, then generate six candidates.
+   从已写好表头的 Excel 读取 126 条实测配方与可调边界，生成六条候选配方。
+2. **High-throughput experimentation and characterization / 高通量实验与表征** — Prepare films and collect absorption and PL spectra, retaining the formulation-to-sample mapping.
+   制备薄膜，采集吸收和 PL 光谱，保存配方与样本的对应关系。
+3. **Pretrained model prediction / 预训练模型预测** — Predict all 2,268 spectral records with the supplied checkpoint and select the top eight.
+   使用附带检查点预测全部 2,268 条光谱记录，按预测 PCE 排序并选出前八条。
+4. **Device validation and feedback / 器件验证与反馈** — Retrieve the selected records' device PCE from the same spectral workbook and display a `PCE (%)` table.
+   从同一光谱工作簿读取所选记录对应的器件 PCE，展示 `PCE (%)` 表。
+
+The formulation and spectral examples are independent datasets. The displayed device values belong to existing spectral records; a new optimization round requires measured PCE paired with each new formulation. The demo does not append records to the formulation workbook.
+
+配方与光谱示例使用独立数据集。展示的器件数值对应已有光谱记录；开展下一轮优化时，须将新配方与其器件实测 PCE 配对。演示不向配方工作簿追加记录。
 
 See [workflow.md](workflow.md) for parameters and outputs, and [data sources](docs/data_sources.md) for preparation and model details.
 
@@ -51,7 +55,7 @@ data/source/                    Original formulation workbooks / 原始配方数
 checkpoints/                    Encoder and PCE weights / 编码器与 PCE 权重
 scripts/train_spectral_model.py  Optional fine-tuning / 可选微调
 outputs/                        Generated results / 运行结果
-legacy/                         Earlier notebooks and utilities / 原有程序
+legacy/                         Original reference material / 原始参考程序
 ```
 
 ## Train a PCE model / 训练 PCE 模型
@@ -74,6 +78,6 @@ The original files are retained under the paths listed in [reorganization.md](do
 
 ## Verification / 验证
 
-Run `python -m unittest discover -s tests -v`. See [validation.md](docs/validation.md) for the executed workflow and model checks.
+Run `python -m unittest discover -s tests -v`. See [validation.md](docs/validation.md) for notebook verification steps and model reference checks.
 
-运行 `python -m unittest discover -s tests -v`；完整运行与模型核验见[验证记录](docs/validation.md)。
+运行 `python -m unittest discover -s tests -v`；演示运行的验证方法与模型参考核验见[验证说明](docs/validation.md)。
