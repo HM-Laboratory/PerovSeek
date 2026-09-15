@@ -1,75 +1,55 @@
-# Workflow guide / 工作流程
+# Workflow / 工作流程
 
-## English
+## 1. Bayesian optimization / 贝叶斯优化
 
-### 1. Open the single notebook
+Open `data/formulations.xlsx`. `Formulations` contains nine components and measured `PCE`, with headers in the first row. `Bounds` contains `Component`, `Lower` and `Upper`; edit these cells to change the search region. Read either sheet directly with `pandas.read_excel`.
 
-Install the Python 3.12 environment described in [README.md](../README.md), then open [PerovSeek_workflow.ipynb](PerovSeek_workflow.ipynb) from the repository root. This workflow was validated with Python 3.12.14. Keep the existing source-directory layout. Run the cells from top to bottom so that imports, configuration and data checks are visible before any fit or prediction.
+打开 `data/formulations.xlsx`。`Formulations` 包含九个组分与实测 `PCE`，第一行为表头。`Bounds` 包含 `Component`、`Lower` 和 `Upper`，可修改上下界控制搜索范围。两个表均可通过 `pandas.read_excel` 直接读取。
 
-The notebook is the main executable narrative. [workflow_helpers.py](../workflow_helpers.py) provides the small training/checkpoint support needed to reuse the original training implementation; it is not a hidden replacement for the BO or inference workflow.
+The component order is `DMF`, `NFM`, `EA`, `Me-4`, `Py3`, `4PADCB`, `4-FBSA`, `F3EABr`, `SPFBS`. Solvent fractions must satisfy **DMF + NFM + EA = 1**. Each search upper bound must exceed its lower bound, and the three solvent ranges must permit a sum of one.
 
-### 2. Read and optimize measured formulations
+组分顺序为 `DMF`、`NFM`、`EA`、`Me-4`、`Py3`、`4PADCB`、`4-FBSA`、`F3EABr`、`SPFBS`。溶剂比例须满足 **DMF + NFM + EA = 1**。各搜索上界须大于下界，且三个溶剂的范围须允许其总和等于 1。
 
-The `init` sheet of `Bayesian optimization/data/BO_SAM_Additive.xlsx` supplies 57 measured records. Inspect the selected columns and objective before fitting. Preserve the workbook's component names and units, including labels that differ from manuscript terminology.
+`perovseek.bayesian.recommend` fits a Gaussian process to measured PCE and selects a batch with qLogNEI. The notebook exposes these defaults:
 
-The visible cells prepare the tensors, fit a Gaussian-process surrogate, construct `qLogNoisyExpectedImprovement`, optimize the acquisition function under the displayed bounds and sum constraints, and export the candidate table. The solvent ratio is fixed at DMF:NFM:EA = 81:17:2 for this example.
+`perovseek.bayesian.recommend` 根据实测 PCE 拟合高斯过程，通过 qLogNEI 选择下一批候选。演示使用以下可调默认参数：
 
-| Setting | New notebook demonstration | Original BO example |
-|---|---|---|
-| Objective | PCE | `Voc*FF` |
-| Candidate batch size | 6 | 62 |
-| Random seed | 42 | Consult the original notebook |
-| Monte Carlo samples | 128 | Consult the original notebook |
-| Acquisition restarts | 4 | Consult the original notebook |
+| Parameter / 参数 | Default / 默认值 |
+| --- | ---: |
+| Target / 目标 | `PCE` |
+| Batch size / 候选数量 | 6 |
+| Seed / 随机种子 | 42 |
+| MC samples / 蒙特卡洛样本数 | 128 |
+| Acquisition restarts / 采集函数重启次数 | 4 |
+| Initial samples / 初始采样数 | 128 |
+| Assumed observation noise SD / 假定观测噪声标准差 | 2.0 PCE percentage points / 百分数百分点 |
 
-The smaller computational budget supports the demonstration. It does not establish that the resulting candidates are equivalent to the original campaign's recommendations. Inspect the notebook for all other actual model and optimizer settings; the paper and example code should not be assumed to use identical configurations. GP means and uncertainties are model outputs, not device measurements or demonstrated performance gains.
+The returned table contains candidate IDs, nine compositions, `PCE_pred` and `PCE_std`. These are model estimates for the recommended formulations. Save the full-precision values when preparing experiments.
 
-### 3. Load the full spectral example
+返回表包含候选编号、九组分比例、`PCE_pred` 和 `PCE_std`，后两列为模型估计。准备实验时使用导出文件中的完整精度数值。
 
-`data/1.59eV_additive_data.xlsx` supplies 2,268 examples. The notebook reads absorption, top-excited PL, bottom-excited PL and the `PCE#rs1` labels. It retains the repository's preprocessing: absorption divided by 4, top PL by 120,000 and bottom PL by 150,000, with wavelength-offset channels passed to the model. Inspect the displayed dimensions and sample/label checks before continuing.
+## 2. High-throughput experimentation and characterization / 高通量实验与表征
 
-The `1.59eV` filename is a source label; the workflow does not silently rename it to a manuscript bandgap label. These spectral examples are not established as paired with the BO formulation records.
+Use the candidate formulations for film preparation and optical characterization. Retain the candidate ID with each film's absorption, top-excited PL and bottom-excited PL measurements. Store new measurements in the same layout and wavelength grid as the example workbook under `data/spectra/`.
 
-### 4. Fine-tune, save and evaluate
+根据候选配方制备薄膜并进行光学表征。将候选编号与各薄膜的吸收、上激发 PL、下激发 PL 测量记录对应保存。新增光谱采用 `data/spectra/` 中示例工作簿的表格布局和波长网格。
 
-The distributed `Pre-trained_model.pth` supplies the spectral pre-training model. Build the supervised PCE model with a prediction head and fine-tune the last 10 encoder blocks and that head for 100 epochs using the visible configuration. This training step is required before PCE inference.
+## 3. Pretrained model prediction / 预训练模型预测
 
-For the 2,268-sample example, seed 42 defines 500 training, 268 validation and 1,500 test examples. Select the model using validation results, then evaluate the test set. Save the trained weights together with the architecture, preprocessing, target scale and split/configuration information needed to reload them. Do not select or tune the model using the test scores.
+`load_spectra` reads the optical workbook. `SpectralPredictor` loads `checkpoints/spectral_pce_state.pt`. Use `subset="test"` to evaluate the saved 1,500-example test split of the supplied workbook, or `subset="all"` for all rows in a compatible workbook.
 
-Report PCE in percent and MAE in **percentage points**. Plot and export all raw predictions, including negative or other physically invalid outputs; those values reveal limitations of the fitted model. Do not clip values before calculating errors or narrow plot limits to hide them.
+`load_spectra` 读取光谱工作簿，`SpectralPredictor` 加载 `checkpoints/spectral_pce_state.pt`。`subset="test"` 使用附带数据中已保存的 1,500 个测试样本；`subset="all"` 可预测兼容格式工作簿中的全部样本。
 
-### 5. Interpret the workflow and its limits
+The notebook plots spectra and predicted versus measured PCE, then sorts samples by predicted PCE. Predictions are exported without clipping. PCE is expressed in percent, while MAE and RMSE use percentage points. Keep sample identifiers with the prediction table when selecting devices for measurement.
 
-The source materials are the existing data, notebooks, `model.py`, `utility.py` and checkpoint distributed in [HM-Laboratory/PerovSeek](https://github.com/HM-Laboratory/PerovSeek). The new notebook exposes one route through these materials while retaining the original files.
+演示绘制光谱与预测、实测 PCE 对照图，并按预测 PCE 对样本排序。预测值完整导出，不作截断。PCE 以百分数表示，MAE、RMSE 以百分数百分点表示。选择待测器件时保留预测表中的样本编号。
 
-The BO and spectral sections are executable but separate public examples. They do not constitute a newly completed experimental closed loop: new BO candidates have not been fabricated or measured, and existing spectral labels must not be presented as their validation. Actual device measurements would be required before adding new feedback records.
+## 4. Device validation and feedback / 器件验证与反馈
 
-Random splitting supports assessment of this supervised run; it does not establish generalization to a new campaign, composition family or fabrication process. The public materials do not establish whether test examples overlap with encoder pre-training. This notebook therefore makes no independent claim to reproduce the paper's AIO accuracy, efficiency gains or optimized formulation.
+The feedback template leaves measured PCE empty for the new candidates. After device testing, associate each measurement with its formulation and add complete measured rows to `Formulations`. Review the bounds and run optimization again. Missing measurements remain blank until an experiment supplies them.
 
-## 中文
+反馈模板中，新候选的实测 PCE 保持空白。器件测试后，将测量结果与对应配方关联，并把完整的实测记录加入 `Formulations`；检查搜索边界后再次运行优化。缺少的测量结果在实验完成前保持空白。
 
-### 1. 从单一 notebook 开始
+Data preparation, units and checkpoint training are described in [data_sources.md](docs/data_sources.md).
 
-按 [README.md](../README.md) 安装 Python 3.12 环境（本流程已在 3.12.14 验证），在仓库根目录打开 [PerovSeek_workflow.ipynb](PerovSeek_workflow.ipynb)，保持原有输入目录结构并顺序执行单元格。notebook 展开数据、配置、拟合与推理过程；[workflow_helpers.py](../workflow_helpers.py) 仅辅助复用原训练流程与保存检查点。
-
-### 2. 配方导入与贝叶斯优化
-
-`Bayesian optimization/data/BO_SAM_Additive.xlsx` 的 `init` 表含 57 条实测记录。先检查选用的列、目标和单位，再构建张量、拟合高斯过程、创建 `qLogNoisyExpectedImprovement` 并按所示边界与求和约束优化候选，最后导出候选表。保留源工作簿的组分名称，不自动替换成论文中的其他拼写。该示例固定 DMF:NFM:EA = 81:17:2。
-
-新 notebook 默认采用 **PCE、6 个候选、seed 42、128 个蒙特卡洛样本及 4 次重启**。原 BO 示例的目标为 `Voc*FF`，每批 62 个候选。缩减计算预算用于演示，不意味着生成的候选与原实验过程等价；其他模型与优化参数以单元格实际配置为准。GP 均值和不确定度是预测，不是实测效率，也不能据此宣称已经获得性能提升。
-
-### 3. 光谱导入与微调
-
-完整的 `data/1.59eV_additive_data.xlsx` 包含 2,268 个样本。读取吸收、上/下激发 PL 和 `PCE#rs1` 标签，并保留原预处理：吸收除以 4，上激发 PL 除以 120,000，下激发 PL 除以 150,000，另加入波长偏移通道。执行前核对维度及样本/标签检查结果。`1.59eV` 保留为源文件标签；这些样本与 BO 配方记录没有经过验证的配对关系。
-
-公开的 `Pre-trained_model.pth` 不是现成的 PCE 预测器。需构建监督预测头，并按展示配置对最后 10 个编码器块及预测头进行 100 个 epoch 的微调。seed 42 将数据分为 500 个训练、268 个验证和 1,500 个测试样本。使用验证集选择检查点，再评价测试集；保存权重时同时记录重新加载所需的架构、预处理、目标缩放和划分/配置。
-
-### 4. 评价与真实实验反馈
-
-PCE 使用百分数，MAE 使用**百分数百分点**。绘图和导出均应保留全部原始预测，包括负值及其他非物理输出；不能先截断预测再计算误差，也不能缩窄坐标范围隐藏这些点。
-
-材料来自 [HM-Laboratory/PerovSeek](https://github.com/HM-Laboratory/PerovSeek) 中已有的公开数据、notebook、模型代码和检查点。新流程保留原文件，不包含私有文稿或演示视频。
-
-BO 与光谱部分是可运行的不同示例，并未在本次运行中完成新的实验闭环。新推荐配方没有被制备或实测，现有光谱标签不能作为其器件验证；只有取得真实器件测量后才能添加实验反馈。
-
-随机划分仅用于本次监督微调评价，不能证明对新实验过程、新组分体系或新制备工艺的泛化。公开材料尚不能确认编码器预训练是否覆盖这些测试样本，因此本流程不宣称独立复现论文中的 AIO 准确率、效率提升或最优配方。
+数据整理、单位和检查点训练说明见 [data_sources.md](docs/data_sources.md)。

@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from trans import Transformer,PatchEmbed,SpectralPosEncoder
+from .transformer import Transformer, PatchEmbed, SpectralPosEncoder
 class FineTuneModel(nn.Module):
     def __init__(self, spectrum_model, hidden_dim,n,embed_dim, dropout_rate=0.1):
         super().__init__()

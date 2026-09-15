@@ -1,0 +1,93 @@
+[
+  {
+    "old": "data/1.59eV_additive_data.xlsx",
+    "new": "data/spectra/1.59eV_additive_data.xlsx",
+    "sha256": "e5ada78cf91d3a3ac4e9474bc0a94fb38392bb3266663a28ad932ccb8c52e927"
+  },
+  {
+    "old": "data/1.59eV_solvent_data.xlsx",
+    "new": "data/spectra/1.59eV_solvent_data.xlsx",
+    "sha256": "20c517147caf55fe2db91aed1284305668017a26cad9be9e4b352f4a8f895bfa"
+  },
+  {
+    "old": "data/1.68eV_data.xlsx",
+    "new": "data/spectra/1.68eV_data.xlsx",
+    "sha256": "faa9eddeeeab5a561b9b3a6d21c7a5072577804f66f61b6bd92d0258d82b95c3"
+  },
+  {
+    "old": "data/1.78eV_data.xlsx",
+    "new": "data/spectra/1.78eV_data.xlsx",
+    "sha256": "21476d325f5f8309ce042c9b832843e17284a7336fd6f689239c850043db1719"
+  },
+  {
+    "old": "data/1.92eV_data.xlsx",
+    "new": "data/spectra/1.92eV_data.xlsx",
+    "sha256": "73b59b8965fb3bd8566f5140320027c3fd2f5755736ab5427114977ca8062da2"
+  },
+  {
+    "old": "data/Bayesian optimization data.xlsx",
+    "new": "data/source/Bayesian optimization data.xlsx",
+    "sha256": "8076d7164e3e6d22a26f45fe55bb6dc5af67ee3c7cdfa4b1efb397087d861fd8"
+  },
+  {
+    "old": "Pre-trained model/Pre-trained_model.pth",
+    "new": "checkpoints/spectral_encoder.pt",
+    "sha256": "8d1ed421165a9caa8591962d2dab8d1a77d4b3b1d3ca1c53ce184ebadc12ee5f"
+  },
+  {
+    "old": "Pre-trained model/1.59eV_data.xlsx",
+    "new": "data/source/1.59eV_preview.xlsx",
+    "sha256": "c21e6ab22cad838fe7420a44c04f303e986eb0a32e3336930fafdfb8769bb515"
+  },
+  {
+    "old": "Pre-trained model/model.py",
+    "new": "perovseek/models/mae.py",
+    "sha256": "41d2298216a99b7c844a8689a90265907e07fc56ad527440ccbbc3eaaf4a543d"
+  },
+  {
+    "old": "Pre-trained model/trans.py",
+    "new": "perovseek/models/transformer.py",
+    "sha256": "3562d67c0dc779eec5cba34c607718ce64018114e74bf1fa5cd4e31442227431"
+  },
+  {
+    "old": "Pre-trained model/utility.py",
+    "new": "legacy/spectral/utility.py",
+    "sha256": "3b584f7d8a940e1c3959f85e17b5fda1fe015e82d69a4339c77f6ad407febcc0"
+  },
+  {
+    "old": "Pre-trained model/Fusion.ipynb",
+    "new": "legacy/spectral/Fusion.ipynb",
+    "sha256": "28b97b0be09d0515cc3cea13272ecfbf4f2f6fbb2d85f66937bb262cce2a5f80"
+  },
+  {
+    "old": "Bayesian optimization/Bayesian_Optimization_parallel.ipynb",
+    "new": "legacy/bayesian/Bayesian_Optimization_parallel.ipynb",
+    "sha256": "8fd6d22926ab5f91f2b85b01ff60bec9a59a0b63c899860d2fccd583994d5c67"
+  },
+  {
+    "old": "Bayesian optimization/utility.py",
+    "new": "legacy/bayesian/utility.py",
+    "sha256": "7833d42fe4f0abdc37be14c85554ee9089e446dd3dcd0443ef13aa1c57379f32"
+  },
+  {
+    "old": "Bayesian optimization/data/BO_SAM_Additive.xlsx",
+    "new": "data/source/BO_SAM_Additive.xlsx",
+    "sha256": "ddf072eebe10df022da3b479d31b925e04bc460b401d78c9d5cf533432c6f353"
+  },
+  {
+    "old": "PerovSeek_workflow.ipynb",
+    "new": "legacy/PerovSeek_workflow_v2.ipynb",
+    "sha256": "f9ed6d2f48325d26fde574c75a199acfca666475119eea238292af3e9e0b0a2f"
+  },
+  {
+    "old": "workflow_helpers.py",
+    "new": "legacy/workflow_helpers.py",
+    "sha256": "3f64dfdcc399635399aab6d53562a4a335ee1f01a0634d0903b7a66c3ac02cc3"
+  },
+  {
+    "old": "Bayesian optimization data.xlsx",
+    "new": "data/source/Bayesian optimization data (updated headers).xlsx",
+    "source_commit": "9cbe58afecd9be3f817542031a528254b5191fa7",
+    "sha256": "0783b20c14c2174f847a95e913cd03401b1c3d1c5d0b1de29109e320fc35e05d"
+  }
+]
