@@ -6,17 +6,17 @@ The demo uses the public datasets, spectral architecture and training implementa
 
 ## Formulations / 配方
 
-`data/formulations.xlsx` contains the 126 records with complete nine-component inputs and measured `PCE` from sheets `1`–`5` of `data/source/Bayesian optimization data.xlsx` (62, 16, 16, 16 and 16 records). Rows missing measured PCE are excluded; `PCE_pred` is not substituted for a measurement. The source label `4F-BASZ` is mapped to `4-FBSA` in the prepared table.
+`data/formulations.xlsx` contains the 126 records with complete nine-component inputs and measured `PCE` from sheets `1`–`5` of the original workbook `Bayesian optimization data.xlsx` (62, 16, 16, 16 and 16 records). Rows missing measured PCE are excluded; `PCE_pred` is not substituted for a measurement. The source label `4F-BASZ` is mapped to `4-FBSA` in the prepared table.
 
-`data/formulations.xlsx` 取自 `data/source/Bayesian optimization data.xlsx` 的第 `1`–`5` 表，包含九组分与实测 `PCE` 均完整的 126 条记录，各表分别为 62、16、16、16、16 条。缺少实测 PCE 的行不纳入，也不使用 `PCE_pred` 代替实测值。整理表中将源列名 `4F-BASZ` 映射为 `4-FBSA`。
+`data/formulations.xlsx` 取自原始工作簿 `Bayesian optimization data.xlsx` 的第 `1`–`5` 表，包含九组分与实测 `PCE` 均完整的 126 条记录，各表分别为 62、16、16、16、16 条。缺少实测 PCE 的行不纳入，也不使用 `PCE_pred` 代替实测值。整理表中将源列名 `4F-BASZ` 映射为 `4-FBSA`。
 
 DMF, NFM and EA are volume fractions. Each row is divided by its solvent sum; three source records have sums of 0.99 or 1.01. The six SAM/passivator values retain the numerical scale of the source workbook. The initial `Bounds` values are the observed minimum and maximum of the prepared inputs.
 
 DMF、NFM 和 EA 为体积分数，整理时将各行的三种溶剂分别除以其总和，其中三条原始记录的总和为 0.99 或 1.01。其余六个 SAM、钝化剂组分保留源工作簿的数值刻度。`Bounds` 初始值取整理后各输入列的最小值和最大值。
 
-`data/formulations_sources.csv` maps each prepared Excel row to its source sheet, Excel row and sample identifier, and retains the raw solvent fractions and their sum. The original workbook is unchanged.
+[formulation_provenance.csv](formulation_provenance.csv) maps each prepared Excel row to its original workbook name, sheet, Excel row and sample identifier, and retains the raw solvent fractions and their sum. Only the prepared formulation table and spectral workbooks are distributed in `data/`; the original formulation workbook is not required to run the demonstration. Its SHA-256 is `8076d7164e3e6d22a26f45fe55bb6dc5af67ee3c7cdfa4b1efb397087d861fd8`.
 
-`data/formulations_sources.csv` 将整理表中的每个 Excel 行对应到来源工作表、Excel 行号和样本编号，并保留原始溶剂比例及其总和。原始工作簿保持不变。
+[formulation_provenance.csv](formulation_provenance.csv) 记录整理表各行对应的原始工作簿名称、工作表、Excel 行号和样本编号，并保留原始溶剂比例及其总和。`data/` 仅提供整理后的配方表与光谱工作簿；运行演示不需要原始配方工作簿。
 
 ## Spectra and checkpoint / 光谱与检查点
 
@@ -40,6 +40,15 @@ Optional test evaluation describes this supervised example split. The all-record
 
 可选测试集评价对应本示例的监督学习划分。演示的全量预测还包含训练集和验证集记录，因此排序结果不代表独立测试性能。公开文件未明确其与编码器预训练数据的重叠情况。模型输出可能超出 PCE 的物理范围，导出数据保留完整预测值。
 
-The upstream workbook with updated headers is preserved as `data/source/Bayesian optimization data (updated headers).xlsx` (commit `9cbe58a`). Its values across all 15 sheets match the original workbook; the `4-FBSA` header matches the prepared demo table.
+## File integrity / 文件校验
 
-上游新上传的表头修订版保存在 `data/source/Bayesian optimization data (updated headers).xlsx`（提交 `9cbe58a`）。15 个工作表的数值均与原表一致，`4-FBSA` 表头与演示数据表一致。
+SHA-256 checksums for the distributed data, model weights and demonstration video are listed in [checksums.sha256](checksums.sha256). Run the following from the repository root:
+
+随仓库提供的数据、权重和视频的 SHA-256 见 [checksums.sha256](checksums.sha256)。在仓库根目录运行：
+
+```bash
+# macOS
+shasum -a 256 -c docs/checksums.sha256
+# Linux
+sha256sum -c docs/checksums.sha256
+```

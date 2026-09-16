@@ -1,68 +1,76 @@
 # PerovSeek
 
-PerovSeek combines Bayesian formulation optimization with spectral prediction of perovskite solar-cell PCE. Its single demonstration notebook, `notebooks/PerovSeek_demo.ipynb`, calls the `perovseek.bayesian` and `perovseek.spectra` libraries in eight code cells.
+Bayesian formulation optimization and spectral prediction of power conversion efficiency (PCE) for perovskite solar cells.
 
-PerovSeek 将贝叶斯配方优化与钙钛矿太阳能电池 PCE 光谱预测结合。唯一演示入口为 `notebooks/PerovSeek_demo.ipynb`，通过八个代码单元调用 `perovseek.bayesian` 和 `perovseek.spectra` 库。
+[![Tests](https://github.com/HM-Laboratory/PerovSeek/actions/workflows/tests.yml/badge.svg)](https://github.com/HM-Laboratory/PerovSeek/actions/workflows/tests.yml)
 
-## Install and run / 安装与运行
+[中文说明](README_zh-CN.md) · [Demo notebook](notebooks/PerovSeek_demo.ipynb) · [Workflow guide](docs/workflow.md) · [Data and models](docs/data_sources.md)
 
-Use Python 3.12. Run these commands from the repository root:
+## Demonstration
 
-使用 Python 3.12，在仓库根目录执行：
+https://github.com/user-attachments/assets/94b40619-ab18-4f79-aa78-81a9c72ec9ac
+
+**69 seconds · 1080p · Chinese and English subtitles.** The video follows formulation optimization, high-throughput experiments, spectral prediction, and device feedback. Each software view is shown for 4 seconds.
+
+[Download the full video](https://github.com/HM-Laboratory/PerovSeek/raw/refs/heads/master/assets/videos/PerovSeek_demo.mp4) · [Subtitles](assets/videos/PerovSeek_demo.srt) · [Video description](docs/video.md)
+
+## Quick start
+
+Use **Python 3.12**. A CPU is sufficient; the trained PCE checkpoint is included.
 
 ```bash
+git clone https://github.com/HM-Laboratory/PerovSeek.git
+cd PerovSeek
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-demo.txt
-python -m pip install -e .
 jupyter notebook notebooks/PerovSeek_demo.ipynb
 ```
 
-On Windows, activate the environment with `.venv\Scripts\Activate.ps1`. Run the notebook cells in order. The supplied PCE checkpoint supports immediate prediction.
+On Windows, create the environment with `py -3.12 -m venv .venv` and activate it with `.venv\Scripts\Activate.ps1`.
 
-Windows 使用 `.venv\Scripts\Activate.ps1` 激活环境。按顺序运行 notebook 单元格，附带的 PCE 检查点可直接用于预测。
+Run the notebook cells in order. Data loading, the PCE objective, optimization parameters, prediction calls and result tables are shown in the notebook. The optimization and spectral model implementations are in the `perovseek` package. Results are saved to `outputs/`.
 
-## Four stages / 四个阶段
+## Workflow
 
-1. **Bayesian optimization / 贝叶斯优化** — Read 126 measured formulations and editable bounds from Excel, then generate six candidates.
-   从已写好表头的 Excel 读取 126 条实测配方与可调边界，生成六条候选配方。
-2. **High-throughput experimentation and characterization / 高通量实验与表征** — Prepare films and collect absorption and PL spectra, retaining the formulation-to-sample mapping.
-   制备薄膜，采集吸收和 PL 光谱，保存配方与样本的对应关系。
-3. **Pretrained model prediction / 预训练模型预测** — Predict all 2,268 spectral records with the supplied checkpoint and select the top eight.
-   使用附带检查点预测全部 2,268 条光谱记录，按预测 PCE 排序并选出前八条。
-4. **Device validation and feedback / 器件验证与反馈** — Retrieve the selected records' device PCE from the same spectral workbook and display a `PCE (%)` table.
-   从同一光谱工作簿读取所选记录对应的器件 PCE，展示 `PCE (%)` 表。
+| Stage | Input and result |
+| --- | --- |
+| **1. Bayesian optimization** | Read 126 formulations and editable bounds from Excel; recommend six candidates using measured PCE as the objective. |
+| **2. High-throughput experiments and characterization** | Prepare films and acquire absorption and two PL spectra, retaining the link between formulation and sample. |
+| **3. Pretrained-model prediction** | Predict PCE for 2,268 spectral records and rank them by predicted efficiency. |
+| **4. Device validation and feedback** | Display the corresponding device PCE for the eight selected spectral records. |
 
-The formulation and spectral examples are independent datasets. The displayed device values belong to existing spectral records; a new optimization round requires measured PCE paired with each new formulation. The demo does not append records to the formulation workbook.
+The nine formulation components are **DMF, NFM, EA, Me-4, Py3, 4PADCB, 4-FBSA, F3EABr and SPFBS**. Column headers are already provided in `data/formulations.xlsx`. Edit the `Formulations` and `Bounds` sheets to update measurements and search bounds; no column-renaming code is needed.
 
-配方与光谱示例使用独立数据集。展示的器件数值对应已有光谱记录；开展下一轮优化时，须将新配方与其器件实测 PCE 配对。演示不向配方工作簿追加记录。
+The supplied formulation and spectral examples are independent datasets. The displayed device values belong to existing spectral records. A new experimental cycle requires each recommended formulation to be paired with its own spectra and measured device PCE. The demonstration leaves the formulation workbook unchanged.
 
-See [workflow.md](workflow.md) for parameters and outputs, and [data sources](docs/data_sources.md) for preparation and model details.
-
-参数与输出见 [workflow.md](workflow.md)，数据整理与模型说明见[数据来源](docs/data_sources.md)。
-
-## Repository layout / 目录结构
+## Repository structure
 
 ```text
-notebooks/PerovSeek_demo.ipynb    Demo / 演示
-perovseek/bayesian.py            Bayesian optimization / 贝叶斯优化
-perovseek/spectra.py             Spectral inference / 光谱推理
-perovseek/models/                Model architecture / 模型结构
-data/formulations.xlsx          Formulations and bounds / 配方与边界
-data/formulations_sources.csv   Source-row mapping / 来源行映射
-data/spectra/                   Spectral workbooks / 光谱数据
-data/source/                    Original formulation workbooks / 原始配方数据
-checkpoints/                    Encoder and PCE weights / 编码器与 PCE 权重
-scripts/train_spectral_model.py  Optional fine-tuning / 可选微调
-outputs/                        Generated results / 运行结果
-legacy/                         Original reference material / 原始参考程序
+PerovSeek/
+├── notebooks/
+│   └── PerovSeek_demo.ipynb     # Single demonstration entry point
+├── perovseek/
+│   ├── bayesian.py             # Bayesian formulation optimization
+│   ├── spectra.py              # Spectral preprocessing and prediction
+│   ├── training.py             # Optional PCE model fine-tuning
+│   └── models/                 # Spectral model architecture
+├── data/
+│   ├── formulations.xlsx       # Formulations and optimization bounds
+│   └── spectra/                # Spectral workbooks
+├── checkpoints/                # Encoder and trained PCE weights
+├── assets/videos/              # Full demonstration video and subtitles
+├── docs/                       # Workflow, data provenance and validation
+├── scripts/                    # Training command
+├── tests/                      # Workflow checks
+└── .github/workflows/          # Continuous integration
 ```
 
-## Train a PCE model / 训练 PCE 模型
+Generated outputs and local environments are excluded from version control.
 
-`checkpoints/spectral_pce_state.pt` contains the encoder and a supervised PCE head. `checkpoints/spectral_encoder.pt` contains the spectral pre-training weights. To fine-tune a new PCE model:
+## Optional model training
 
-`checkpoints/spectral_pce_state.pt` 包含编码器与监督训练的 PCE 预测头；`checkpoints/spectral_encoder.pt` 为光谱预训练权重。需要重新微调时执行：
+`checkpoints/spectral_pce_state.pt` contains the encoder and supervised PCE head used by the demonstration. `checkpoints/spectral_encoder.pt` provides the pretraining weights for fine-tuning:
 
 ```bash
 python scripts/train_spectral_model.py \
@@ -72,12 +80,12 @@ python scripts/train_spectral_model.py \
   --epochs 100
 ```
 
-The original files are retained under the paths listed in [reorganization.md](docs/reorganization.md).
+Preprocessing, checkpoint provenance and the evaluation split are described in [Data and models](docs/data_sources.md).
 
-原有文件保留在[目录调整记录](docs/reorganization.md)所列路径。
+## Validation and development
 
-## Verification / 验证
+```bash
+python -m unittest discover -s tests -v
+```
 
-Run `python -m unittest discover -s tests -v`. See [validation.md](docs/validation.md) for notebook verification steps and model reference checks.
-
-运行 `python -m unittest discover -s tests -v`；演示运行的验证方法与模型参考核验见[验证说明](docs/validation.md)。
+See [Validation](docs/validation.md) for notebook acceptance checks and model reference results, and [Contributing](CONTRIBUTING.md) for development instructions.

@@ -1,0 +1,84 @@
+1
+00:00:00,000 --> 00:00:03,000
+钙钛矿配方闭环优化
+(Closed-loop formulation optimization)
+
+2
+00:00:03,000 --> 00:00:04,500
+贝叶斯优化
+(Bayesian optimization)
+
+3
+00:00:04,500 --> 00:00:08,500
+导入九组分配方与实测 PCE
+(Import nine-component formulations and measured PCE)
+
+4
+00:00:08,500 --> 00:00:12,500
+设置优化参数，生成下一批候选配方
+(Set optimization parameters and generate the next batch)
+
+5
+00:00:12,500 --> 00:00:16,500
+导出推荐配方，开展高通量实验
+(Export recommended formulations for high-throughput experiments)
+
+6
+00:00:16,500 --> 00:00:18,000
+高通量实验与表征
+(High-throughput experimentation and characterization)
+
+7
+00:00:18,000 --> 00:00:32,300
+高通量薄膜制备
+(High-throughput film fabrication)
+
+8
+00:00:32,300 --> 00:00:41,300
+高通量光学表征
+(High-throughput optical characterization)
+
+9
+00:00:41,300 --> 00:00:42,800
+预训练模型预测
+(Pretrained-model prediction)
+
+10
+00:00:42,800 --> 00:00:46,800
+读取吸收与双面激发光致发光光谱
+(Load absorption and photoluminescence spectra)
+
+11
+00:00:46,800 --> 00:00:50,800
+预测器件效率，并按预测 PCE 排序
+(Predict device PCE and rank the samples)
+
+12
+00:00:50,800 --> 00:00:52,300
+器件验证与反馈
+(Device validation and feedback)
+
+13
+00:00:52,300 --> 00:00:57,067
+高通量热蒸镀
+(High-throughput thermal evaporation)
+
+14
+00:00:57,067 --> 00:00:58,200
+批量制备的器件阵列
+(Arrays of fabricated devices)
+
+15
+00:00:58,200 --> 00:01:03,300
+高通量光电表征
+(High-throughput optoelectronic characterization)
+
+16
+00:01:03,300 --> 00:01:07,300
+读取对应器件 PCE，记录实验反馈
+(Read device PCE and record experimental feedback)
+
+17
+00:01:07,300 --> 00:01:09,300
+贝叶斯优化 → 实验与表征 → 模型预测 → 验证与反馈
+(Optimize → Experiment → Predict → Validate & update)

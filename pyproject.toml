@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "perovseek"
 version = "0.4.0"
 description = "Nine-component formulation optimization and spectral PCE prediction"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "torch==2.14.0",
@@ -20,6 +21,11 @@ dependencies = [
 
 [project.optional-dependencies]
 demo = ["notebook>=7,<8", "ipykernel>=6,<8"]
+
+[project.urls]
+Repository = "https://github.com/HM-Laboratory/PerovSeek"
+Documentation = "https://github.com/HM-Laboratory/PerovSeek/blob/master/docs/workflow.md"
+Issues = "https://github.com/HM-Laboratory/PerovSeek/issues"
 
 [tool.setuptools.packages.find]
 include = ["perovseek*"]

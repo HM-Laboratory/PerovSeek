@@ -8,3 +8,8 @@ demo_outputs/
 build/
 dist/
 outputs/
+/legacy/
+/data/source/
+/data/formulations_sources.csv
+.pytest_cache/
+.ruff_cache/

@@ -30,4 +30,6 @@ The supplied checkpoint's 1,500 test predictions reproduce the reference values 
 
 The separate training command was run for 100 epochs in a CPU reproduction check. It selected epoch 47 and reproduced every tensor of the supplied PCE checkpoint, as well as the training history. Retraining is optional and is not part of the demonstration notebook.
 
-Original workbooks and encoder weights were checked against the hashes in [file_moves.json](file_moves.json). The original model computations are preserved with package-relative imports. Inference loads a state dictionary with `weights_only=True` and performs no network requests.
+The distributed workbooks, model weights and video have recorded hashes in [checksums.sha256](checksums.sha256). The model computations use package-relative imports. Inference loads a state dictionary with `weights_only=True` and performs no network requests.
+
+GitHub Actions runs the library checks on Python 3.12 for pushes and pull requests. The workflow is defined in [tests.yml](../.github/workflows/tests.yml).
