@@ -10,7 +10,7 @@ Bayesian formulation optimization and spectral prediction of power conversion ef
 
 https://github.com/user-attachments/assets/94b40619-ab18-4f79-aa78-81a9c72ec9ac
 
-**69 seconds · 1080p · Chinese and English subtitles.** The video follows formulation optimization, high-throughput experiments, spectral prediction, and device feedback. Each software view is shown for 4 seconds.
+The video follows formulation optimization, high-throughput experiments, spectral prediction, and device feedback.
 
 [Download the full video](https://github.com/HM-Laboratory/PerovSeek/raw/refs/heads/master/assets/videos/PerovSeek_demo.mp4) · [Subtitles](assets/videos/PerovSeek_demo.srt) · [Video description](docs/video.md)
 
