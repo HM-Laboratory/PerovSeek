@@ -8,7 +8,7 @@
 
 https://github.com/user-attachments/assets/94b40619-ab18-4f79-aa78-81a9c72ec9ac
 
-全长约 69 秒，1080p，中英双语字幕。视频依次展示贝叶斯优化、高通量实验与表征、预训练模型预测、器件验证与反馈；软件画面每张显示 4 秒。
+全长约 69 秒，1080p，中英双语字幕。视频依次展示贝叶斯优化、高通量实验与表征、预训练模型预测、器件验证与反馈。
 
 [下载完整版](https://github.com/HM-Laboratory/PerovSeek/raw/refs/heads/master/assets/videos/PerovSeek_demo.mp4) · [字幕文件](assets/videos/PerovSeek_demo.srt) · [视频说明](docs/video.md)
 
@@ -35,7 +35,7 @@ Windows 下使用 `py -3.12 -m venv .venv` 创建环境，通过 `.venv\Scripts\
 | --- | --- |
 | **贝叶斯优化** | 从 Excel 读取 126 条配方及搜索边界，以 PCE 为目标推荐六条候选配方。 |
 | **高通量实验与表征** | 制备薄膜，采集吸收和双面激发 PL 光谱，保留配方与样本的对应关系。 |
-| **预训练模型预测** | 对 2,268 条光谱记录预测 PCE，并按预测效率排序。 |
+| **预训练模型预测** | 对光谱记录预测 PCE，并按预测效率排序。 |
 | **器件验证与反馈** | 展示所选八条光谱记录对应的器件 PCE。 |
 
 九组分为 **DMF、NFM、EA、Me-4、Py3、4PADCB、4-FBSA、F3EABr、SPFBS**。`data/formulations.xlsx` 已填写表头，修改 `Formulations` 和 `Bounds` 工作表即可更新数据与搜索范围。
